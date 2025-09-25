@@ -24,7 +24,7 @@ The resulting Snap package allows you to easily install Plastimatch on any Linux
 
 ### Prerequisites
 
-- **Docker** installed on your system: [Docker Installation Guide](https://docs.docker.com/get-docker/)
+- **Docker** installed on your system: [Docker Installation Guide](https://docs.docker.com/engine/)
 - **Snapd** installed on your system: [Snapd Installation Guide](https://snapcraft.io/docs/installing-snapd)
 
 ---
@@ -91,7 +91,7 @@ To always have the latest version of Plastimatch:
 
 - [Plastimatch Official Repository](https://gitlab.com/plastimatch/plastimatch)
 - [Snapcraft Documentation](https://snapcraft.io/docs)
-- [Docker Documentation](https://docs.docker.com/get-docker/)
+- [Docker Documentation](https://docs.docker.com/engine/)
 
 ---
 
