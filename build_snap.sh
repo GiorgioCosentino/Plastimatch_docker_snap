@@ -10,13 +10,18 @@ apt-get install g++ make git cmake \
   libdcmtk-dev libdlib-dev libfftw3-dev \
   libinsighttoolkit5-dev \
   libnsl-dev \
-  libpng-dev libtiff-dev uuid-dev zlib1g-dev
+  libpng-dev libtiff-dev uuid-dev zlib1g-dev \
+  plocate
 
 # Clone Plastimatch source code from GitLab
 git clone https://gitlab.com/plastimatch/plastimatch.git
 
 # Clone snap packaging repo from GitHub
 git clone https://github.com/GiorgioCosentino/Plastimatch-snap
+
+cd Plastimatch-snap
+mkdir -p local/libs/
+cd ..
 
 # Create build directory for Plastimatch and enter it
 mkdir plastimatch_compiled
@@ -30,10 +35,19 @@ make -j$(nproc)
 
 # Copy binaries and libraries to the snap packaging directory
 cp plastimatch ../Plastimatch-snap/local
-cp libplm* ../Plastimatch-snap/local/libs
+cd ..
+
+printf "    organize:\n" >> /Plastimatch-snap/snapcraft.yaml
+for l in libplm libblas.so. liblapack.so. libminc2.so. libgfortran.so. libdlib.so. libxml2.so. libicuuc.so. libicudata.so. libjpeg.so. libhdf5_serial_cpp.so.; do
+  for file in $(locate $l | grep "/usr/lib/"); do
+    cp "$file" /Plastimatch-snap/local/libs/
+    base=$(basename "$file")
+    printf "      libs/%s: lib/\n" "$base" >> /Plastimatch-snap/snapcraft.yaml
+  done
+done
 
 # Move to snap packaging directory
-cd ../Plastimatch-snap
+cd Plastimatch-snap
 
 # Build the snap package (using destructive mode)
 snapcraft --destructive-mode
