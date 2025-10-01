@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+declare -A processed_files
+
 # Update package list
 apt-get update
 
@@ -37,12 +39,16 @@ make -j$(nproc)
 cp plastimatch ../Plastimatch-snap/local
 cd ..
 
-printf "    organize:\n" >> /Plastimatch-snap/snapcraft.yaml
+printf "    organize:\n" >> Plastimatch-snap/snapcraft.yaml
 for l in libplm libblas.so. liblapack.so. libminc2.so. libgfortran.so. libdlib.so. libxml2.so. libicuuc.so. libicudata.so. libjpeg.so. libhdf5_serial_cpp.so.; do
   for file in $(locate $l | grep "/usr/lib/"); do
-    cp "$file" /Plastimatch-snap/local/libs/
+    cp "$file" Plastimatch-snap/local/libs/
     base=$(basename "$file")
-    printf "      libs/%s: lib/\n" "$base" >> /Plastimatch-snap/snapcraft.yaml
+    if [[ -z "${processed_files[$base]}" ]]; then
+      cp "$file" /Plastimatch-snap/local/libs/
+      printf "    libs/%s: lib/\n" "$base" >> /Plastimatch-snap/snapcraft.yaml
+      processed_files["$base"]=1
+    fi
   done
 done
 
